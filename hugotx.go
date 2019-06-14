@@ -371,6 +371,8 @@ func (c *conf) produce() {
     // parse file=base.ext
     ext := filepath.Ext(file)
     base := strings.TrimSuffix(file, ext)
+    // fmt.Println("tplFile=", tplFile)
+    // fmt.Println("dstPath=", dstPath)
 
     UPDATE := false
     fmt.Printf("analyzing %s ...", file)
@@ -389,6 +391,7 @@ func (c *conf) produce() {
      			target = dstPath + "/" + base + "." + lang + folder.DstExt
      		}
   		}
+  		// fmt.Println("target=", target)
 
   		// check if target is up to date, compared to tplFile
 			if no_update(tplFile, target) {
@@ -463,10 +466,10 @@ func (c *conf) langlist()(bool, error) {
 		target = target + "/languages.yaml" */
 
 		if rel, err := filepath.Rel(PWD, target); err == nil {
-			fmt.Printf("checking %s ...", rel)
+			fmt.Printf("analyzing %s ...", rel)
     } else {
       _, file := path.Split(target)
-      fmt.Printf("checking %s ...", file)
+      fmt.Printf("analyzing %s ...", file)
     }
 
 		if no_update("./txconf.yaml", target) {

@@ -50,7 +50,7 @@ langlist:
 #
 
 yaml:
-  - tplfile: ./data/about.yaml
+  - tplfile: ./langtpl/data/about.yaml
     tpllang: zh-hant
     dstpath: ./data
     dstext: .yaml
@@ -61,7 +61,7 @@ yaml:
     replaces:
       - name: KEEPBALAPAY
         value: "**Bala**Pay"
-  - tplfile: ./themes/mytheme/i18n/tpl.yaml
+  - tplfile: ./langtpl/themes/mytheme/i18n/tpl.yaml
     tpllang: zh-hant
     dstpath: ./themes/mytheme/i18n
     dstext: .yaml
@@ -81,7 +81,7 @@ yaml:
         value: "WeChat"
       - name: KEEPQQKEEP
         value: "QQ"
-  - tplfile: ./content/blogs/access.tpl
+  - tplfile: ./langtpl/content/blogs/access.md
     dstpath: ./content/blogs
     dstext: .md
     tpllang: zh-hant
