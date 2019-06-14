@@ -1,0 +1,96 @@
+- id: home
+  translation: Homepage
+
+- id: newbie
+  translation: Newbie tour
+
+- id: summary
+  translation: Platform overview
+
+- id: access
+  translation: Quick boot
+
+- id: faq
+  translation: common problem
+
+- id: api
+  translation: API interface
+
+- id: contact
+  translation: contact us
+
+- id: login
+  translation: Sign in
+
+- id: balapay
+  translation: BalaPay
+
+- id: what
+  translation: What are we?
+
+- id: payment
+  translation: Payment experience
+
+- id: why
+  translation: Why choose us?
+
+- id: applications
+  translation: Application field
+
+- id: pricing
+  translation: Billing method
+
+- id: testimonials
+  translation: User testimony
+
+- id: links
+  translation: Platform tour
+
+- id: user
+  translation: User platform
+
+- id: guide
+  translation: manual
+
+- id: privacy
+  translation: Privacy Policy
+
+- id: report
+  translation: User suggestion
+
+- id: license
+  translation: Copyright notice
+
+- id: location
+  translation: address
+
+- id: mail
+  translation: mailbox
+
+- id: phone
+  translation: phone
+
+- id: address
+  translation: address
+
+- id: qq
+  translation: QQ
+
+- id: line
+  translation: Line
+
+- id: wechat
+  translation: WeChat
+
+- id: name
+  translation: Name
+
+- id: subject
+  translation: Subject matter
+
+- id: message
+  translation: Suggested content
+
+- id: send_message
+  translation: Send a message
+
