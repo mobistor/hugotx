@@ -1,0 +1,100 @@
+
+languages:
+ - en
+ - ja
+
+#
+# produce the repective native language name, indexed by above language string
+# yamlfmt: global | self
+#
+#
+langlist:
+  tplfile: languages.yaml
+  dstpath: ./data
+  dstext: .yaml
+  langsub: true
+  langidx: true
+  yamlfmt: global
+
+
+#
+#  tplfile: ./a/b/c/about.yaml
+#
+#  if langsub == true {
+#    target => ./a/b/c/en/about.yaml
+#           => ./a/b/c/ja/about.yaml
+#  } else {
+#    if langidx == true {
+#        target => ./a/b/c/en.yaml
+#               => ./a/b/c/ja.yaml
+#     } else {
+#        target => ./a/b/c/about.en.yaml
+#               => ./a/b/c/about.ja.yaml
+#     }
+#  }
+#
+
+
+#
+#  yamlfmt: yaml | md5 | i18n
+#     yaml: standard yaml file
+#     md: markdownfile with yaml front matter in the front.
+#        ---
+#          yaml
+#        ---
+#          markdown
+#
+#     i18n: hugo i18n language file, with the format
+#        - id: xxx
+#          translation: yyyy
+#
+
+yaml:
+  - tplfile: ./data/about.yaml
+    tpllang: zh-hant
+    dstpath: ./data
+    dstext: .yaml
+    langsub: true
+    yamlfmt: yaml
+    skips:
+      - enable
+    replaces:
+      - name: KEEPBALAPAY
+        value: "**Bala**Pay"
+  - tplfile: ./themes/mytheme/i18n/tpl.yaml
+    tpllang: zh-hant
+    dstpath: ./themes/mytheme/i18n
+    dstext: .yaml
+    langsub: false
+    langidx: true
+    yamlfmt: i18n
+    skips:
+      - id
+    replaces:
+      - name: KEEPBALAPAYKEEP
+        value: "BalaPay"
+      - name: KEEPAPI
+        value: "API"
+      - name: KEEPLINEKEEP
+        value: "Line"
+      - name: KEEPWECHATKEEP
+        value: "WeChat"
+      - name: KEEPQQKEEP
+        value: "QQ"
+  - tplfile: ./content/blogs/access.tpl
+    dstpath: ./content/blogs
+    dstext: .md
+    tpllang: zh-hant
+    langsub: false
+    langidx: false
+    yamlfmt: md
+    skips:
+      - markup
+      - date
+      - author
+      - weight
+      - categories
+    replaces:
+      - name: KEEPBALAPAY
+        value: "**Bala**Pay"
+
