@@ -3,6 +3,17 @@ languages:
  - en
  - ja
 
+json:
+  - tplfile: ./langtpl/json/test2.json
+    tpllang: zh-hant
+    dstpath: ./locale
+    dstext: .json
+    langsub: false 
+    langidx: true
+    replaces:
+      - name: KEEPBALAPAY
+        value: "**Bala**Pay"
+
 #
 # produce the repective native language name, indexed by above language string
 # yamlfmt: global | self

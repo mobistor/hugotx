@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/bregydoc/gtranslate"
 	"golang.org/x/text/language"
@@ -41,6 +42,7 @@ type conf struct {
 	Languages []string 	`yaml:"languages"`
 	LangList  folder  	`yaml:"langlist"`
 	YAML   		[]folder 	`yaml:"yaml"`
+  JSON			[]folder  `yaml:"json"`
 }
 
 type trans struct {
@@ -89,6 +91,51 @@ func contains(a []string, x string) bool {
 }
 
 //
+// For json to js
+//
+func parseJsonStringMap(tx *trans, mp map[string]interface{}, space string, newline bool) {
+	first := true
+	for key, value := range mp {
+		if !first {
+			fmt.Fprintf(tx.output, ",\n")
+		}
+		if first {
+			first = false
+		}
+		switch v := value.(type) {
+		case string:
+			text := strings.TrimSuffix(value.(string), "\n")
+			//fmt.Fprintf(tx.output, "%s%s: '%s'\n", space, key, text)
+			if !contains(tx.skips, key) {
+				//fmt.Fprintf(tx.output, " >\n%s  %v\n", space, TRANSLATE_WITH_REPLACE(text, tx))
+				fmt.Fprintf(tx.output, "%s%s: '%s'", space, key, TRANSLATE_WITH_REPLACE(text, tx))
+			} else {
+				//fmt.Fprintf(tx.output, "%s\n", text)
+				fmt.Fprintf(tx.output, "%s%s: '%s'", space, key, text)
+			}
+		case bool:
+			fmt.Fprintf(tx.output, "%v\n", v)
+		case int:
+			fmt.Fprintf(tx.output, "%v\n", v)
+		case float64:
+			fmt.Fprintf(tx.output, "%v\n", v)
+		case map[interface{}]interface{}:
+			parseMap(tx, v, space+SPACE, true)
+		case []interface{}:
+			fmt.Fprintf(tx.output, "\n")
+			parseArray(tx, v, space+SPACE, key)
+		case map[string]interface{}:
+			fmt.Fprintf(tx.output, "%s%s: {\n", space, key)
+			parseJsonStringMap(tx, v, space+SPACE, true)
+			fmt.Fprintf(tx.output, "%s}", space)
+		default:
+			log.Fatalf("# unknow value %+v\n", value)
+		}
+	}
+	fmt.Fprintf(tx.output, "\n")
+}
+
+//
 // For yaml by "github.com/gernest/front", front matter with content
 //
 func parseStringMap(tx *trans, mp map[string]interface{}, space string, newline bool) {
@@ -109,15 +156,6 @@ func parseStringMap(tx *trans, mp map[string]interface{}, space string, newline 
 			text := strings.TrimSuffix(value.(string), "\n")
 			if !contains(tx.skips, key) {
 				fmt.Fprintf(tx.output, " >\n%s  %v\n", space, TRANSLATE_WITH_REPLACE(text, tx))
-				/* // fmt.Fprintf(i18n.output, " >\n%s  %v\n", space, TRANSLATE(text, i18n.fromLang, i18n.toLang))
-				c := TRANSLATE(text, tx.fromLang, tx.toLang)
-				s1 := string(c)
-				var s2 string
-				for _, r := range tx.replaces {
-					s2 = strings.ReplaceAll(s1, r.Name, r.Value)
-					s1 = s2
-				}
-				fmt.Fprintf(tx.output, " >\n%s  %v\n", space, s2)*/
 			} else {
 				fmt.Fprintf(tx.output, "%s\n", text)
 			}
@@ -350,7 +388,7 @@ func YAML(tx *trans)(bool, error) {
 	return true, nil
 }
 
-func (c *conf) produce() {
+func (c *conf) produceYAML() {
 
 	for _, folder := range c.YAML {
 
@@ -499,6 +537,114 @@ func (c *conf) langlist()(bool, error) {
 	return true, nil
 }
 
+func load_json(tplFile string)(map[string]interface{}, error) {
+
+	tpl, err := ioutil.ReadFile(tplFile)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+
+	mp := make(map[string]interface{})
+	err = json.Unmarshal(tpl, &mp)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	return mp, nil
+}
+
+func JSON(tx *trans)(bool, error) {
+
+	// load and parse .md file
+	mp, err := load_json(tx.tplFile)
+	if err != nil {
+		log.Fatalf("Fail to load and parse %s, please check it!\n", tx.tplFile)
+	}
+
+	// create output file
+	/* tx.output, err = os.Create(tx.dstFile)
+	if err != nil {
+		log.Fatalf("Fail to create target file of %s !\n", tx.dstFile)
+	}
+	defer tx.output.Close()*/
+	tx.output = os.Stdout
+	fmt.Fprintf(tx.output, "\nexport default {\n")
+	parseJsonStringMap(tx, mp, SPACE, false)
+	fmt.Fprintf(tx.output, "\n}")
+
+	return true, nil
+}
+
+func (c *conf) produceJSON() {
+
+	for _, folder := range c.JSON {
+
+		tplFile := PWD + "/" + folder.TplFile
+    if err := file_is_exists(tplFile); err != nil {
+    		log.Printf("template of %s not exists\n", tplFile)
+    		continue
+    }
+
+    dstPath := PWD + "/" + folder.DstPath
+    dstPath = strings.TrimSuffix(dstPath, "/")
+    if err := dir_must_exist(dstPath); err != nil {
+    		log.Printf("Fail to create target folder of %s !\n", dstPath)
+    		continue
+    }
+
+    _, file := path.Split(tplFile)
+    // parse file=base.ext
+    ext := filepath.Ext(file)
+    base := strings.TrimSuffix(file, ext)
+    // fmt.Println("tplFile=", tplFile)
+    // fmt.Println("dstPath=", dstPath)
+
+    UPDATE := false
+    fmt.Printf("analyzing %s ...", file)
+
+		for _, lang := range c.Languages {
+			target := ""
+    	// produce correct target path
+    	if folder.LangSub {
+				target = dstPath + "/" + lang
+				dir_must_exist(target)
+				target = target + "/" + base + folder.DstExt
+  		} else {
+    		if folder.LangIdx {
+    			target = dstPath + "/" + lang + folder.DstExt
+     		} else {
+     			target = dstPath + "/" + base + "." + lang + folder.DstExt
+     		}
+  		}
+  		// fmt.Println("target=", target)
+
+  		// check if target is up to date, compared to tplFile
+			if no_update(tplFile, target) {
+		    continue
+		  }
+
+  		tx := trans{tplFile: tplFile, dstFile: target, fromLang: folder.TplLang, toLang: lang, skips: folder.Skips, replaces: folder.Replaces}
+      update, err := JSON(&tx)
+      if update && err == nil {
+      	if rel, err := filepath.Rel(PWD, target); err == nil {
+        	fmt.Printf("\n  %s generated.", rel)
+        } else {
+        	_, file := path.Split(target)
+        	fmt.Printf("\n  %s generated.", file)
+        }
+      }
+      UPDATE = UPDATE || update
+		}
+		if !UPDATE {
+			fmt.Printf("(no update)\n")
+		} else {
+			fmt.Printf("\n")
+		}
+
+	}
+}
+
 
 func (c *conf) getConf() *conf {
 
@@ -527,8 +673,11 @@ func (c *conf) getConf() *conf {
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var c conf
 	c.getConf()
-	c.langlist()
-	c.produce()
+  c.produceJSON()
+
+	// c.langlist()
+	// c.produceYAML()
 }
