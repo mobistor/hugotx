@@ -1,0 +1,39 @@
+{
+  "route": {
+    "dashboard": "首页",
+    "documentation": "文档",
+    "guide": "引导页",
+    "permission": "权限测试页"
+  },
+  "promote": {
+    "tool": "@:route.promote.tool",
+    "url": "网址",
+    "qrcode": "静态二维码",
+    "gifqrcode": "动态二维码",
+    "gifbg": "自定义动态背景之 URL(需为 .gif 动画)",
+    "network": "网络推广"
+  },
+  "valid": {
+    "toolong": "不能超过 {c} 个字元！",
+    "number": "仅能输入数字",
+    "fee": "仅能输入 0.01 至 0.99",
+    "password": "密码必须大于 {min} 个字元，不超过 {max} 个字元",
+    "email": "请输入正确的 email 格式",
+    "range": "必须介于 {min} 跟 {max} 间的数值"
+  },
+  "confirm": {
+    "delete": {
+      "account": "此操作将永久删除该帐号，是否继续？",
+      "app": "此操作将永久删除该应用，是否继续？",
+      "device": "此操作将永久删除该设备，是否继续？",
+      "plan": "此操作将永久删除套餐，是否继续？"
+    },
+    "action": {
+      "evaluation": "此操作将开通应用测试方案，是否继续？",
+      "paid": "此操作将对交易进行补单，请确认交易已经到帐成功，是否补单？",
+      "recharge": "此操作将对此帐号进行充值",
+      "purchase": "此操作将进行付款采购套餐，请确认是否进行？"
+    }
+  }
+}
+
