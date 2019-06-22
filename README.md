@@ -23,4 +23,4 @@ to help produce locale files automatically by Google Translation
 
 ### langtpl
 
-it's the folder to put the orignal template material, hugotx will read these templete files and translate it by Google Translation, and the save to specified target folder.
+it's the folder to put the orignal template materials, hugotx will read these templete files and translate it by Google Translation, and to save them to the specified target folder.
