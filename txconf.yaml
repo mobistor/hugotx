@@ -1,18 +1,36 @@
 
+# en, zh-hant, zh-hants
 languages:
- - en
- - ja
+ - zh-hant
+ - zh-hans 
 
+#
+# js to json online: http://phrogz.net/JS/NeatJSON/
+#
 json:
-  - tplfile: ./langtpl/json/test2.json
-    tpllang: zh-hant
-    dstpath: ./locale
-    dstext: .json
+  - tplfile: ./langtpl/json/mgnt.json
+    tpllang: zh-hans
+    dstpath: ./mgnt
+    dstext: .js
     langsub: false 
     langidx: true
     replaces:
-      - name: KEEPBALAPAY
-        value: "**Bala**Pay"
+      - name: KEEPNKEEP 
+        value: "{n}"
+      - name: KEEPMINKEEP
+        value: "{min}"
+      - name: KEEPMAXKEEP
+        value: "{max}"
+      - name: KEEPFOURKEEP
+        value: "4"
+      - name: KEEPNAMEKEEP
+        value: "{name}"
+      - name: KEEPACCOUNTKEEP
+        value: "{account}"
+      - name: KEEPAPIKEEP
+        value: "API"
+      - name: KEEPKEYKEEP
+        value: "KEY"
 
 #
 # produce the repective native language name, indexed by above language string

@@ -563,15 +563,15 @@ func JSON(tx *trans)(bool, error) {
 	}
 
 	// create output file
-	/* tx.output, err = os.Create(tx.dstFile)
+	tx.output, err = os.Create(tx.dstFile)
 	if err != nil {
 		log.Fatalf("Fail to create target file of %s !\n", tx.dstFile)
 	}
-	defer tx.output.Close()*/
-	tx.output = os.Stdout
+	defer tx.output.Close()
+	// tx.output = os.Stdout
 	fmt.Fprintf(tx.output, "\nexport default {\n")
 	parseJsonStringMap(tx, mp, SPACE, false)
-	fmt.Fprintf(tx.output, "\n}")
+	fmt.Fprintf(tx.output, "}\n")
 
 	return true, nil
 }
@@ -677,7 +677,6 @@ func main() {
 	var c conf
 	c.getConf()
   c.produceJSON()
-
-	// c.langlist()
-	// c.produceYAML()
+	c.langlist()
+	c.produceYAML()
 }
